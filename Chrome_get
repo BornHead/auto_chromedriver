@@ -1,0 +1,43 @@
+
+        protected ChromeDriverService _driverService = null;
+        protected ChromeOptions _options = null;
+        protected ChromeDriver _driver = null;
+        public void Chrome_get(string v)
+        {
+            try
+            {
+                try
+                {
+                    Directory.Delete("Chrome", true);
+                }
+                catch { }
+                new DriverManager().SetUpDriver(new ChromeConfig(), VersionResolveStrategy.MatchingBrowser);
+
+
+
+                var version_name = string.Empty;
+                foreach (var t in new System.IO.DirectoryInfo(Application.StartupPath + @"\Chrome\").GetFiles("*", System.IO.SearchOption.AllDirectories))
+                {
+                    if (t.Name == "chromedriver.exe")
+                    {
+                        File.Copy(t.FullName, Application.StartupPath + @"\chromedriver.exe", true);
+                        Directory.Delete("Chrome", true);
+                        break;
+                    }
+                }
+                _options = new ChromeOptions();
+                //_options.DebuggerAddress = "127.0.0.1:9222";          // 열려있는 크롬창 핸들 가져올때
+
+                _driverService = ChromeDriverService.CreateDefaultService(Application.StartupPath);
+                _driverService.HideCommandPromptWindow = true;
+
+                _driver = new ChromeDriver(_driverService, _options);
+                _driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromMilliseconds(10);
+
+                //_webDriver = new ChromeDriver();
+            }
+            catch
+            {
+
+            }
+        }
